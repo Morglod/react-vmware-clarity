@@ -12,6 +12,7 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var WebpackCleanupPlugin = require("webpack-cleanup-plugin");
 
 module.exports = {
+    devtool: isProduction ? "source-map" : "cheap-eval-source-map",
     context: sourcePath,
     entry: {
         app: "./index.ts"
@@ -30,7 +31,11 @@ module.exports = {
         mainFields: ["module", "browser", "main"],
         alias: {
             app: path.resolve(__dirname, "src/app/")
-        }
+        },
+        modules: [
+            path.resolve(__dirname, "src"),
+            path.resolve(__dirname, "node_modules")
+        ]
     },
     module: {
         rules: [
@@ -50,7 +55,6 @@ module.exports = {
                         {
                             loader: "css-loader",
                             query: {
-                                modules: true,
                                 sourceMap: !isProduction,
                                 importLoaders: 1,
                                 localIdentName: "[local]__[hash:base64:5]"
@@ -69,6 +73,44 @@ module.exports = {
                                         disabled: isProduction
                                     })
                                 ]
+                            }
+                        }
+                    ]
+                })
+            },
+            // scss
+            {
+                test: /\.scss$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: "style-loader",
+                    use: [
+                        {
+                            loader: "css-loader",
+                            query: {
+                                sourceMap: !isProduction,
+                                importLoaders: 1,
+                                localIdentName: "[local]__[hash:base64:5]"
+                            }
+                        },
+                        {
+                            loader: "postcss-loader",
+                            options: {
+                                ident: "postcss",
+                                plugins: [
+                                    require("postcss-import")({ addDependencyTo: webpack }),
+                                    require("postcss-url")(),
+                                    require("postcss-cssnext")(),
+                                    require("postcss-reporter")(),
+                                    require("postcss-browser-reporter")({
+                                        disabled: isProduction
+                                    })
+                                ]
+                            }
+                        },
+                        {
+                            loader: "sass-loader",
+                            options: {
+                                // sourceMap: !isProduction
                             }
                         }
                     ]

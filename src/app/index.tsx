@@ -4,7 +4,9 @@ import {
     Alerts,
     Alert,
     Button,
-    Badge
+    Badge,
+    Label,
+    Tooltip
 } from 'components';
 
 class App extends React.Component {
@@ -48,6 +50,36 @@ class App extends React.Component {
                         <Button info outline >
                             Show items <Badge children={100} />
                         </Button>
+                        <br />
+                        <Label>
+                            Items
+                            <Badge>{100}</Badge>
+                        </Label>
+                        <br />
+                        <Button outline info icon="dollar" title="Buy something" />
+                        <Tooltip
+                            content={(
+                                <div>
+                                    <Alert
+                                        type="info"
+                                        text="asd"
+                                        actions={[]}
+                                        icon="dollar"
+                                    />
+                                    <Button
+                                        outline
+                                        info
+                                        children="Test"
+                                    />
+                                </div>
+                            )}
+                        >
+                            <Button
+                                outline
+                                info
+                                icon="dollar"
+                            />
+                        </Tooltip>
                     </div>
                     <nav className="sidenav" />
                 </div>

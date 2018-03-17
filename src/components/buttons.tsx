@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { classNames, unreachableCode } from 'utils';
 import { ClrIcon } from 'icons';
+import { Tooltip } from './tooltips';
 
 export type ButtonType =
     { type: 'primary'|'danger'|'warning'|'info'|'success', primary?: undefined, danger?: undefined, warning?: undefined, info?: undefined, success?: undefined } |
@@ -21,8 +22,6 @@ export type ButtonProps = ButtonType & {
     icon?: string,
     loading?: boolean,
     onClick?: Function,
-
-    // TODO: Tooltip
     title?: string,
 }
 
@@ -39,10 +38,10 @@ function TypeToStr(type: ButtonType) {
 
 export class Button extends React.PureComponent<ButtonProps> {
     render() {
-        const { className, children, disabled, outline, flat, small, block, icon, loading, onClick } = this.props;
+        const { className, children, disabled, outline, flat, small, block, icon, loading, onClick, title } = this.props;
         const type = TypeToStr(this.props);
 
-        return (
+        const rendered = (
             <button
                 className={classNames([
                     className,
@@ -62,6 +61,16 @@ export class Button extends React.PureComponent<ButtonProps> {
                 {children}
             </button>
         );
+
+        if (title) {
+            return (
+                <Tooltip content={title}>
+                    {rendered}
+                </Tooltip>
+            );
+        }
+
+        return rendered;
     }
 }
 

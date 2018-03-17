@@ -28,9 +28,13 @@ export type AlertProps =
     AlertType &
     AlertItemOrItems &
     {
+        hidden?: boolean,
         children?: undefined,
-        close?: boolean,
+        closable?: boolean,
         onClose?: React.MouseEventHandler<any>,
+        appLevel?: boolean,
+        small?: boolean,
+        className?: string,
     }
 
 export function TypeToClassName(type: AlertType) {
@@ -49,12 +53,20 @@ export function AlertNormalizeItems(items: AlertItemOrItems): AlertItem[] {
 
 export class Alert extends React.PureComponent<AlertProps> {
     render() {
-        const { close, onClose } = this.props;
+        const { closable, onClose, appLevel, small, hidden, className } = this.props;
+        if (hidden) return null;
+
         const items = AlertNormalizeItems(this.props);
 
         return (
             <div
-                className={classNames([ 'alert', 'alert' + TypeToClassName(this.props) ])}
+                className={classNames([
+                    className,
+                    'alert',
+                    'alert' + TypeToClassName(this.props),
+                    appLevel && 'alert-app-level',
+                    small && 'alert-sm'
+                ])}
             >
                 <div className="alert-items">
                     {items.map((item, i) => (
@@ -67,11 +79,94 @@ export class Alert extends React.PureComponent<AlertProps> {
                         </div>
                     ))}
                 </div>
-                { close &&
+                {closable &&
                     <button type="button" className="close" aria-label="Close" onClick={onClose}>
                         <ClrIcon aria-hidden="true" shape="close" />
                     </button>}
             </div>
         );
+    }
+}
+
+export type AlertsPagerProps = {
+    current: number,
+    count: number,
+    onChange: (newIndex: number) => void,
+    className?: string,
+}
+
+export class AlertsPager extends React.PureComponent<AlertsPagerProps> {
+    handleLeft = () => {
+        const newIndex = (this.props.current - 1) % this.props.count;
+        this.props.onChange((newIndex < 0) ? (this.props.count - newIndex) : newIndex);
+    };
+
+    handleRight = () => {
+        const newIndex = (this.props.current + 1) % this.props.count;
+        this.props.onChange(newIndex);
+    };
+
+    render() {
+        const { current, count, className } = this.props;
+
+        return (
+            <div className={classNames([ className, 'alerts-pager' ])}>
+                <div className="alerts-pager-control">
+                    <div className="alerts-page-down">
+                        <button className="alerts-pager-button" onClick={this.handleLeft}>
+                            <ClrIcon shape="caret left" />
+                        </button>
+                    </div>
+                    <div className="alerts-pager-text">{current} / {count}</div>
+                    <div className="alerts-page-up">
+                        <button className="alerts-pager-button" onClick={this.handleRight}>
+                            <ClrIcon shape="caret right" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
+export type AlertsProps = {
+    children: React.ReactElement<Alert>[],
+    onChange?: (newIndex: number) => void,
+    className?: string,
+}
+
+export class Alerts extends React.Component<AlertsProps> {
+    state = {
+        currentIndex: 0
+    };
+
+    handleAlertChange = (newIndex: number) => {
+        this.setState({
+            currentInd: newIndex
+        }, this.afterIndexChange);
+    };
+
+    afterIndexChange = () => {
+        if (this.props.onChange)
+            this.props.onChange(this.state.currentIndex);
+    };
+
+    render() {
+        const { children, className } = this.props;
+        const { currentIndex } = this.state;
+        const current = children[currentIndex];
+
+        const alertTypeClassName = current ? 'alert' + TypeToClassName(current.props.props) : '';
+
+        return (
+            <div className={classNames([ className, 'alerts', alertTypeClassName ])}>
+                <AlertsPager
+                    current={this.state.currentIndex}
+                    onChange={this.handleAlertChange}
+                    count={children.length}
+                />
+                {current}
+            </div>
+        )
     }
 }

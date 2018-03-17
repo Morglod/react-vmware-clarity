@@ -20,9 +20,6 @@
   "author": "morglod",
   "license": "MIT",
   "dependencies": {
-    "@types/node": "^9.4.7",
-    "@types/webpack": "^4.1.1",
-    "@types/webpack-env": "^1.13.5",
     "@webcomponents/custom-elements": "^1.0.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0"

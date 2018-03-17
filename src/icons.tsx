@@ -32,15 +32,16 @@ export type ClrIconProps = {
     style?: string,
     size?: string,
     flip?: 'vertical'|'horizontal',
+    children?: undefined,
 }
 
 export class ClrIcon extends React.PureComponent<ClrIconProps> {
     render() {
         const { className, ...props } = this.props;
-        const attrs = Object.entries(props).map(([ key, value ]) => `${key}="${encodeURIComponent(value)}"`).join(' ');
 
-        return <div dangerouslySetInnerHTML={{__html:
-            `<clr-icon ${className ? `class="${encodeURIComponent(className)}"` : ''} ${attrs} ></clr-icon>`
-        }} />;
+        return React.createElement('clr-icon', {
+            class: className,
+            ...props
+        });
     }
 }

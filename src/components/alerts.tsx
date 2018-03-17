@@ -37,7 +37,7 @@ export type AlertProps =
         className?: string,
     }
 
-export function TypeToClassName(type: AlertType) {
+function TypeToClassName(type: AlertType) {
     if (type.type) return `-${type.type}`;
     else if (type.danger !== undefined) return '-danger';
     else if (type.warning !== undefined) return '-warning';
@@ -71,10 +71,10 @@ export class Alert extends React.PureComponent<AlertProps> {
                 <div className="alert-items">
                     {items.map((item, i) => (
                         <div className="alert-item static" key={i}>
-                            <div className="alert-icon-wrapper">
-                                <ClrIcon className="alert-icon" shape="info-circle" />
-                            </div>
-                            <div className="alert-text" children={item.text} />
+                            {item.icon && <div className="alert-icon-wrapper">
+                                <ClrIcon className="alert-icon" shape={item.icon} />
+                            </div>}
+                            <span className="alert-text" children={item.text} />
                             <div className="alert-actions" children={item.actions} />
                         </div>
                     ))}
@@ -117,7 +117,7 @@ export class AlertsPager extends React.PureComponent<AlertsPagerProps> {
                             <ClrIcon shape="caret left" />
                         </button>
                     </div>
-                    <div className="alerts-pager-text">{current} / {count}</div>
+                    <div className="alerts-pager-text">{current + 1} / {count}</div>
                     <div className="alerts-page-up">
                         <button className="alerts-pager-button" onClick={this.handleRight}>
                             <ClrIcon shape="caret right" />
@@ -130,7 +130,7 @@ export class AlertsPager extends React.PureComponent<AlertsPagerProps> {
 }
 
 export type AlertsProps = {
-    children: React.ReactElement<Alert>[],
+    children: React.ReactElement<AlertProps>[],
     onChange?: (newIndex: number) => void,
     className?: string,
 }
@@ -142,7 +142,7 @@ export class Alerts extends React.Component<AlertsProps> {
 
     handleAlertChange = (newIndex: number) => {
         this.setState({
-            currentInd: newIndex
+            currentIndex: newIndex
         }, this.afterIndexChange);
     };
 
@@ -156,7 +156,7 @@ export class Alerts extends React.Component<AlertsProps> {
         const { currentIndex } = this.state;
         const current = children[currentIndex];
 
-        const alertTypeClassName = current ? 'alert' + TypeToClassName(current.props.props) : '';
+        const alertTypeClassName = current ? 'alert' + TypeToClassName(current.props) : '';
 
         return (
             <div className={classNames([ className, 'alerts', alertTypeClassName ])}>

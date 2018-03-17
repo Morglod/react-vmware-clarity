@@ -98,7 +98,7 @@ export type AlertsPagerProps = {
 export class AlertsPager extends React.PureComponent<AlertsPagerProps> {
     handleLeft = () => {
         const newIndex = (this.props.current - 1) % this.props.count;
-        this.props.onChange((newIndex < 0) ? (this.props.count - newIndex) : newIndex);
+        this.props.onChange((newIndex < 0) ? (this.props.count + newIndex) : newIndex);
     };
 
     handleRight = () => {

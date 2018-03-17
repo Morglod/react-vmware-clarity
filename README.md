@@ -2,6 +2,10 @@
 
 React UI framework, based on [VMWare Clarity](https://vmware.github.io/clarity/).
 
+* Webpack 4
+* TypeScript
+* SASS
+
 ## Done
 
 * VMWare Clarity styles

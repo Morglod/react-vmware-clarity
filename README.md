@@ -23,6 +23,23 @@ React UI framework, based on [VMWare Clarity](https://vmware.github.io/clarity/)
 * npm publish
 * documentation
 
+## Use SASS constants from VMWare Clarity
+
+Install WMWare Clarity package & bootstrap dependency
+```
+npm i @clr/ui bootstrap@4.0.0-alpha.5
+```
+
+Light theme:
+```scss
+@import "~@clr/ui/src/main.scss";
+```
+
+Dark theme:
+```scss
+@import "~@clr/ui/src/dark-theme.scss";
+```
+
 ## PS
 
 * [React Boilerplate by rokoroku](https://github.com/rokoroku/react-redux-typescript-boilerplate) is great

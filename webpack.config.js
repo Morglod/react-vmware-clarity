@@ -57,7 +57,7 @@ module.exports = {
                             query: {
                                 sourceMap: !isProduction,
                                 importLoaders: 1,
-                                localIdentName: "[local]__[hash:base64:5]"
+                                // localIdentName: "[local]__[hash:base64:5]"
                             }
                         },
                         {
@@ -89,7 +89,7 @@ module.exports = {
                             query: {
                                 sourceMap: !isProduction,
                                 importLoaders: 1,
-                                localIdentName: "[local]__[hash:base64:5]"
+                                // localIdentName: "[local]__[hash:base64:5]"
                             }
                         },
                         {

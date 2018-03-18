@@ -27,7 +27,7 @@ React UI framework, based on [VMWare Clarity](https://vmware.github.io/clarity/)
 
 Install WMWare Clarity package & bootstrap dependency
 ```
-npm i @clr/ui bootstrap@4.0.0-alpha.5
+npm i @clr/ui@0.11.9 bootstrap@4.0.0-alpha.5
 ```
 
 Light theme:

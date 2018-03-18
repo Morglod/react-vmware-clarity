@@ -1,15 +1,16 @@
 import * as React from 'react';
-import { classNames, unreachableCode } from 'utils';
+import { classNames } from 'utils';
 import { ClrIcon } from 'icons';
 import { Tooltip } from './tooltips';
 
-export type ButtonType =
-    { type: 'primary'|'danger'|'warning'|'info'|'success', primary?: undefined, danger?: undefined, warning?: undefined, info?: undefined, success?: undefined } |
-    { type?: undefined, danger: boolean, warning?: undefined, info?: undefined, success?: undefined, primary?: undefined } |
-    { type?: undefined, danger?: undefined, warning: boolean, info?: undefined, success?: undefined, primary?: undefined } |
-    { type?: undefined, danger?: undefined, warning?: undefined, info: boolean, success?: undefined, primary?: undefined } |
-    { type?: undefined, danger?: undefined, warning?: undefined, info?: undefined, success: boolean, primary?: undefined } |
-    { type?: undefined, danger?: undefined, warning?: undefined, info?: undefined, success?: undefined, primary: boolean };
+export type ButtonType = {
+    type?: 'primary'|'danger'|'warning'|'info'|'success',
+    primary?: boolean,
+    danger?: boolean,
+    warning?: boolean,
+    info?: boolean,
+    success?: boolean,
+}
 
 export type ButtonProps = ButtonType & {
     className?: string,
@@ -25,7 +26,6 @@ export type ButtonProps = ButtonType & {
     title?: string,
 }
 
-
 function TypeToStr(type: ButtonType) {
     if (type.type) return `${type.type}`;
     else if (type.danger !== undefined) return 'danger';
@@ -33,7 +33,7 @@ function TypeToStr(type: ButtonType) {
     else if (type.info !== undefined) return 'info';
     else if (type.success !== undefined) return 'success';
     else if (type.primary !== undefined) return 'primary';
-    return unreachableCode();
+    return '';
 }
 
 export class Button extends React.PureComponent<ButtonProps> {
@@ -48,7 +48,7 @@ export class Button extends React.PureComponent<ButtonProps> {
                     'btn',
                     flat && 'btn-link',
                     small && 'btn-sm',
-                    `btn-${type}${outline ? '-outline' : ''}`,
+                    `btn${type ? '-' + type : ''}${outline ? '-outline' : ''}`,
                     block && 'btn-block',
                     icon && 'btn-icon'
                 ])}
@@ -74,24 +74,90 @@ export class Button extends React.PureComponent<ButtonProps> {
     }
 }
 
-// export type ButtonGroupProps = {
-//     className?: string,
-//     children?: React.ReactElement<ButtonProps>[]
-// }
+export type ButtonGroupOverflowProps = {
+    className?: string,
+    defaultOpen?: boolean,
+    open?: boolean,
+    onToggle?: (newState: boolean) => void,
+    children?: any
+}
 
-// export class ButtonGroup extends React.PureComponent<ButtonGroupProps> {
-//     render() {
-//         const { children, className } = this.props;
+export class ButtonGroupOverflow extends React.Component<ButtonGroupOverflowProps> {
+    state = {
+        isOpen: this.props.defaultOpen || false,
+    };
 
-//         return (
-//             <div
-//                 className={classNames([
-//                     className,
-//                     'btn-group',
-//                 ])}
-//             >
-//                 {children}
-//             </div>
-//         );
-//     }
-// }
+    handleToggle = () => {
+        this.setState({
+            isOpen: !this.state.isOpen,
+        }, this.afterToggle);
+    };
+
+    afterToggle = () => {
+        if (this.props.onToggle)
+            this.props.onToggle(this.state.isOpen);
+    };
+
+    render() {
+        const { children, className } = this.props;
+        const isOpen = this.props.open !== undefined ? this.props.open : this.state.isOpen;
+
+        return (
+            <div
+                className={classNames([
+                    className,
+                    'btn-group-overflow',
+                    isOpen && 'open'
+                ])}
+            >
+                <button className="btn dropdown-toggle" onClick={this.handleToggle}>
+                    <ClrIcon shape="ellipsis-horizontal" />
+                </button>
+                <div className="dropdown-menu">
+                    {children}
+                </div>
+            </div>
+        );
+    }
+}
+
+export type ButtonGroupProps = {
+    className?: string,
+    primary?: boolean,
+    flat?: boolean,
+    small?: boolean,
+    children: React.ReactElement<any>[],
+
+    /** buttons limit */
+    limit?: number,
+}
+
+export class ButtonGroup extends React.PureComponent<ButtonGroupProps> {
+    render() {
+        const { children, className, primary, flat, small, limit } = this.props;
+
+        if (!children || children.length === 0)
+            return null;
+
+        return (
+            <div
+                className={classNames([
+                    className,
+                    'btn-group',
+                    primary && 'btn-primary',
+                    flat && 'btn-link',
+                    small && 'btn-sm',
+                ])}
+            >
+                {(limit && children.length > limit) ? (
+                    <>
+                        {children.slice(0, limit)}
+                        <ButtonGroupOverflow>
+                            {children.slice(limit)}
+                        </ButtonGroupOverflow>
+                    </>
+                ) : children}
+            </div>
+        );
+    }
+}

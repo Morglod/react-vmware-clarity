@@ -4,6 +4,4 @@ import '@clr/icons';
 import '@clr/ui/src/main.scss';
 // import '@clr/ui/src/dark-theme.scss';
 
-export const A = 123;
-
 import 'app/index';

@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { classNames, unreachableCode } from 'utils';
+import { classNames } from 'utils';
 import { ClrIcon } from 'icons';
 
-export type AlertType =
-    { type: 'danger'|'warning'|'info'|'success', danger?: undefined, warning?: undefined, info?: undefined, success?: undefined } |
-    { type?: undefined, danger: boolean, warning?: undefined, info?: undefined, success?: undefined } |
-    { type?: undefined, danger?: undefined, warning: boolean, info?: undefined, success?: undefined } |
-    { type?: undefined, danger?: undefined, warning?: undefined, info: boolean, success?: undefined } |
-    { type?: undefined, danger?: undefined, warning?: undefined, info?: undefined, success: boolean };
+export type AlertType = {
+    type: 'danger'|'warning'|'info'|'success',
+    danger?: boolean,
+    warning?: boolean,
+    info?: boolean,
+    success?: boolean
+}
 
 export type AlertItem = {
     text: string,
@@ -43,7 +44,7 @@ function TypeToClassName(type: AlertType) {
     else if (type.warning !== undefined) return '-warning';
     else if (type.info !== undefined) return '-info';
     else if (type.success !== undefined) return '-success';
-    return unreachableCode();
+    return '';
 }
 
 export function AlertNormalizeItems(items: AlertItemOrItems): AlertItem[] {
@@ -57,13 +58,14 @@ export class Alert extends React.PureComponent<AlertProps> {
         if (hidden) return null;
 
         const items = AlertNormalizeItems(this.props);
+        const alertType = TypeToClassName(this.props);
 
         return (
             <div
                 className={classNames([
                     className,
                     'alert',
-                    'alert' + TypeToClassName(this.props),
+                    alertType && 'alert' + alertType,
                     appLevel && 'alert-app-level',
                     small && 'alert-sm'
                 ])}
@@ -93,6 +95,7 @@ export type AlertsPagerProps = {
     count: number,
     onChange: (newIndex: number) => void,
     className?: string,
+    children?: undefined,
 }
 
 export class AlertsPager extends React.PureComponent<AlertsPagerProps> {
@@ -133,6 +136,7 @@ export type AlertsProps = {
     children: React.ReactElement<AlertProps>[],
     onChange?: (newIndex: number) => void,
     className?: string,
+    current?: number,
 }
 
 export class Alerts extends React.Component<AlertsProps> {
@@ -153,7 +157,7 @@ export class Alerts extends React.Component<AlertsProps> {
 
     render() {
         const { children, className } = this.props;
-        const { currentIndex } = this.state;
+        const currentIndex = this.props.current !== undefined ? this.props.current : this.state.currentIndex;
         const current = children[currentIndex];
 
         const alertTypeClassName = current ? 'alert' + TypeToClassName(current.props) : '';

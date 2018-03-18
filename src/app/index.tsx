@@ -4,6 +4,7 @@ import {
     Alerts,
     Alert,
     Button,
+    ButtonGroup,
     Badge,
     Label,
     Tooltip
@@ -80,6 +81,25 @@ class App extends React.Component {
                                 icon="dollar"
                             />
                         </Tooltip>
+                        <br />
+                        <ButtonGroup limit={5}>
+                            <Button icon="home" children="Home" />
+                            <Button icon="cog" children="Settings" />
+                            <Button icon="home" children="User" />
+                            <Button icon="cog" children="Cloud" />
+                            <Button icon="home" children="Home" />
+                            <Button icon="cog" children="Settings" />
+                            <Button icon="home" children="User" />
+                            <Button icon="cog" children="Cloud" />
+                            <Button icon="home" children="Home" />
+                            <Button icon="cog" children="Settings" />
+                            <Button icon="home" children="User" />
+                            <Button icon="cog" children="Cloud" />
+                            <Button icon="home" children="Home" />
+                            <Button icon="cog" children="Settings" />
+                            <Button icon="home" children="User" />
+                            <Button icon="cog" children="Cloud" />
+                        </ButtonGroup>
                     </div>
                     <nav className="sidenav" />
                 </div>

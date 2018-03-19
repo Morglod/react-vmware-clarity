@@ -7,7 +7,9 @@ import {
     ButtonGroup,
     Badge,
     Label,
-    Tooltip
+    Tooltip,
+    Card,
+    Code,
 } from 'components';
 
 class App extends React.Component {
@@ -100,6 +102,31 @@ class App extends React.Component {
                             <Button icon="home" children="User" />
                             <Button icon="cog" children="Cloud" />
                         </ButtonGroup>
+                        <br />
+                        <Card
+                            title="My card"
+                            text="It's my card!"
+                        />
+                        <Code lang="css" trim>{`
+                            @import url(http://fonts.googleapis.com/css?family=Questrial);
+                            @import url(http://fonts.googleapis.com/css?family=Arvo);
+
+                            @font-face {
+                                src: url(http://lea.verou.me/logo.otf);
+                                font-family: 'LeaVerou';
+                            }
+
+                            /*
+                            Shared styles
+                            */
+                            
+                            section h1,
+                            #features li strong,
+                            header h2,
+                            footer p {
+                                font: 100% Rockwell, Arvo, serif;
+                            }
+                        `}</Code>
                     </div>
                     <nav className="sidenav" />
                 </div>

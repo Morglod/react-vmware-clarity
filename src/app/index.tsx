@@ -10,6 +10,7 @@ import {
     Tooltip,
     Card,
     Code,
+    Checkbox,
 } from 'components';
 
 class App extends React.Component {
@@ -84,7 +85,28 @@ class App extends React.Component {
                             />
                         </Tooltip>
                         <br />
+                        <div>Hard limit</div>
                         <ButtonGroup limit={5}>
+                            <Button icon="home" children="Home" />
+                            <Button icon="cog" children="Settings" />
+                            <Button icon="home" children="User" />
+                            <Button icon="cog" children="Cloud" />
+                            <Button icon="home" children="Home" />
+                            <Button icon="cog" children="Settings" />
+                            <Button icon="home" children="User" />
+                            <Button icon="cog" children="Cloud" />
+                            <Button icon="home" children="Home" />
+                            <Button icon="cog" children="Settings" />
+                            <Button icon="home" children="User" />
+                            <Button icon="cog" children="Cloud" />
+                            <Button icon="home" children="Home" />
+                            <Button icon="cog" children="Settings" />
+                            <Button icon="home" children="User" />
+                            <Button icon="cog" children="Cloud" />
+                        </ButtonGroup>
+                        <br />
+                        <div>Overflow limit</div>
+                        <ButtonGroup minButtonWidth={100}>
                             <Button icon="home" children="Home" />
                             <Button icon="cog" children="Settings" />
                             <Button icon="home" children="User" />
@@ -127,6 +149,12 @@ class App extends React.Component {
                                 font: 100% Rockwell, Arvo, serif;
                             }
                         `}</Code>
+                        <br />
+                        <Checkbox>Simple checkbox</Checkbox>
+                        <Checkbox value="indeterminate">Hard set to indeterminate</Checkbox>
+                        <Checkbox checked disabled>Checked disabled</Checkbox>
+                        <Checkbox inline>A</Checkbox>
+                        <Checkbox inline defaultValue="indeterminate">B</Checkbox>
                     </div>
                     <nav className="sidenav" />
                 </div>

@@ -2,9 +2,11 @@ import * as React from 'react';
 import { classNames } from 'utils';
 import { ClrIcon } from 'icons';
 import { Tooltip } from './tooltips';
+import { ResponsiveItems } from 'react-responsive-render';
 
 export type ButtonType = {
     type?: 'primary'|'danger'|'warning'|'info'|'success',
+    submit?: boolean,
     primary?: boolean,
     danger?: boolean,
     warning?: boolean,
@@ -38,7 +40,7 @@ function TypeToStr(type: ButtonType) {
 
 export class Button extends React.PureComponent<ButtonProps> {
     render() {
-        const { className, children, disabled, outline, flat, small, block, icon, loading, onClick, title } = this.props;
+        const { className, children, disabled, outline, flat, small, block, icon, loading, onClick, title, submit } = this.props;
         const type = TypeToStr(this.props);
 
         const rendered = (
@@ -54,6 +56,7 @@ export class Button extends React.PureComponent<ButtonProps> {
                 ])}
                 disabled={disabled}
                 onClick={onClick as any}
+                type={submit ? 'submit': undefined}
             >
                 {(!loading && icon) && <ClrIcon shape={icon} key="icon" />}
                 {loading && <span className="spinner spinner-inline" />}
@@ -130,34 +133,64 @@ export type ButtonGroupProps = {
 
     /** buttons limit */
     limit?: number,
+    minButtonWidth?: number
 }
 
 export class ButtonGroup extends React.PureComponent<ButtonGroupProps> {
     render() {
-        const { children, className, primary, flat, small, limit } = this.props;
+        const { children, className, primary, flat, small, limit, minButtonWidth } = this.props;
 
         if (!children || children.length === 0)
             return null;
 
-        return (
-            <div
-                className={classNames([
-                    className,
-                    'btn-group',
-                    primary && 'btn-primary',
-                    flat && 'btn-link',
-                    small && 'btn-sm',
-                ])}
-            >
-                {(limit && children.length > limit) ? (
-                    <>
-                        {children.slice(0, limit)}
-                        <ButtonGroupOverflow>
-                            {children.slice(limit)}
-                        </ButtonGroupOverflow>
-                    </>
-                ) : children}
-            </div>
-        );
+        if (minButtonWidth) {
+            if (limit) {
+                console.warn('ButtonGroup: limit not working with minButtonWidth');
+            }
+
+            return (
+                <ResponsiveItems
+                    items={children}
+                    minItemWidth={minButtonWidth}
+                    children={({ children, restItems }) => (
+                        <div>
+                            <div
+                                className={classNames([
+                                    className,
+                                    'btn-group',
+                                    primary && 'btn-primary',
+                                    flat && 'btn-link',
+                                    small && 'btn-sm',
+                                ])}
+                            >
+                                {children}
+                                {restItems.length ? <ButtonGroupOverflow children={restItems} /> : null }
+                            </div>
+                        </div>
+                    )}
+                />
+            );
+        } else {
+            return (
+                <div
+                    className={classNames([
+                        className,
+                        'btn-group',
+                        primary && 'btn-primary',
+                        flat && 'btn-link',
+                        small && 'btn-sm',
+                    ])}
+                >
+                    {(limit && children.length > limit) ? (
+                        <>
+                            {children.slice(0, limit)}
+                            <ButtonGroupOverflow>
+                                {children.slice(limit)}
+                            </ButtonGroupOverflow>
+                        </>
+                    ) : children}
+                </div>
+            );
+        }
     }
 }

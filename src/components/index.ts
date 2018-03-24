@@ -5,3 +5,4 @@ export * from './labels';
 export * from './tooltips';
 export * from './cards';
 export * from './code';
+export * from './checkboxes';

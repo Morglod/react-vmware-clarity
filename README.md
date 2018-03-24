@@ -14,8 +14,9 @@ React UI framework, based on [VMWare Clarity](https://vmware.github.io/clarity/)
 * Badges
 * Buttons
 * Cards
-
+* Checkboxes
 * Code Highlight
+
 * Labels
 * Tooltips
 

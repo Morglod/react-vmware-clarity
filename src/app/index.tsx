@@ -11,6 +11,8 @@ import {
     Card,
     Code,
     Checkbox,
+    DatePicker,
+    DateInput,
 } from 'components';
 
 class App extends React.Component {
@@ -155,6 +157,9 @@ class App extends React.Component {
                         <Checkbox checked disabled>Checked disabled</Checkbox>
                         <Checkbox inline>A</Checkbox>
                         <Checkbox inline defaultValue="indeterminate">B</Checkbox>
+                        <br />
+                        <DatePicker />
+                        <DateInput />
                     </div>
                     <nav className="sidenav" />
                 </div>

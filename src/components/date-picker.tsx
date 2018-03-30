@@ -5,6 +5,7 @@ import * as Moment from 'moment';
 
 import { ClrIcon } from 'icons';
 import { classNames } from 'utils';
+import { SpaceAround, SpaceAroundStatus } from 'react-responsive-render';
 
 export type DatePickerProps = {
     defaultValue?: Date,
@@ -14,6 +15,8 @@ export type DatePickerProps = {
     onChange?: (newValue: Date) => void,
     className?: string,
     style?: any,
+    readOnly?: boolean,
+    renderDay?: (day: number, dateJS: number, viewMonthStart: Moment.Moment, pickedDay: Moment.Moment, select: Function) => React.ReactElement<any>
 }
 
 export enum DatePickerMode {
@@ -53,6 +56,7 @@ export class DatePicker extends React.PureComponent<DatePickerProps, DatePickerS
     };
 
     handleSelectDay = (dateJS: number) => {
+        if (this.props.readOnly) return;
         this.setState({
             value: Moment(dateJS).startOf('day'),
         }, this.afterSelectDay)
@@ -102,7 +106,7 @@ export class DatePicker extends React.PureComponent<DatePickerProps, DatePickerS
     render() {
         const {
             locale,
-            hidden
+            hidden,
         } = this.props;
 
         const {
@@ -213,17 +217,21 @@ export class DatePicker extends React.PureComponent<DatePickerProps, DatePickerS
                                             {row.map((day) =>
                                                 <td key={day.dateJS} className="calendar-cell">
                                                     <div className="day">
-                                                        <button
-                                                            className={classNames([
-                                                                'day-btn',
-                                                                day.monthIndex !== moment.month() && 'is-disabled',
-                                                                day.dateJS === Moment().startOf('day').toDate().getTime() && 'is-today',
-                                                                day.dateJS === pickedMoment.startOf('day').toDate().getTime() && 'is-selected'
-                                                            ])}
-                                                            type="button"
-                                                            children={day.date}
-                                                            onClick={() => this.handleSelectDay(day.dateJS)}
-                                                        />
+                                                        {this.props.renderDay ?
+                                                            this.props.renderDay(day.date - 1, day.dateJS, moment, pickedMoment, () => this.handleSelectDay(day.dateJS))
+                                                                : (
+                                                            <button
+                                                                className={classNames([
+                                                                    'day-btn',
+                                                                    day.monthIndex !== moment.month() && 'is-disabled',
+                                                                    day.dateJS === Moment().startOf('day').toDate().getTime() && 'is-today',
+                                                                    day.dateJS === pickedMoment.startOf('day').toDate().getTime() && 'is-selected'
+                                                                ])}
+                                                                type="button"
+                                                                children={day.date}
+                                                                onClick={() => this.handleSelectDay(day.dateJS)}
+                                                            />
+                                                        )}
                                                     </div>
                                                 </td>
                                             )}
@@ -292,30 +300,139 @@ export class DatePicker extends React.PureComponent<DatePickerProps, DatePickerS
     }
 }
 
-export class DateInput extends React.PureComponent {
+export type DateInputProps = {
+    defaultValue?: string|Date,
+    value?: string|Date,
+    locale?: string,
+    style?: any,
+    className?: string,
+    onChange?: (newValue: string|Date) => void,
+    readOnly?: boolean,
+    readOnlyInput?: boolean,
+    spaceAround?: boolean,
+}
+
+export class DateInput extends React.PureComponent<DateInputProps> {
+    static defaultProps: DatePickerProps = {
+        defaultValue: new Date(),
+        locale: 'en'
+    }
+
+    static valueToString(value: string|Date, locale: string = 'en'): string {
+        if (typeof value === 'string') return value;
+        return Moment(value).locale(locale).format('L');
+    }
+
     state: {
-        isOpen: boolean
+        isOpen: boolean,
+        value: string
     } = {
-        isOpen: false
+        isOpen: false,
+        value: DateInput.valueToString(this.props.value !== undefined ? this.props.value : (this.props.defaultValue || new Date)),
+    };
+
+    toggleDatePicker = () => {
+        this.setState({ isOpen: !this.state.isOpen });
+    };
+
+    handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({
+            value: evt.target.value
+        }, this.afterInputChange);
+    };
+
+    afterInputChange = () => {
+        if (this.props.onChange)
+            this.props.onChange(this.state.value);
+    };
+
+    handleDatePickerChange = (newValue: Date) => {
+        this.setState({
+            value: DateInput.valueToString(newValue, this.props.locale),
+            isOpen: false,
+        }, this.props.onChange ? (() => this.props.onChange!(newValue)) : undefined);
     };
 
     render() {
-        return (
-            <div className="date-container" style={{ position: 'relative' }}>
-                <input type="text" placeholder={Moment.localeData().longDateFormat('L')} />
-                <button type="button" className="datepicker-trigger" onClick={() => this.setState({ isOpen: !this.state.isOpen })}>
-                    <ClrIcon className="datepicker-trigger-icon" shape="calendar" />
-                </button>
-                {this.state.isOpen ? (
-                    <DatePicker
-                        style={{
-                            position: 'absolute',
-                            top: '100%',
-                            left: 0
-                        }}
+        const {
+            readOnly,
+            readOnlyInput,
+            className,
+            style,
+            locale,
+            spaceAround
+        } = this.props;
+
+        const value = this.props.value !== undefined ? DateInput.valueToString(this.props.value) : this.state.value;
+
+        if (spaceAround) {
+            const containerInput = (
+                <div className="date-container" style={{ position: 'relative' }}>
+                    <input
+                        type="text"
+                        placeholder={Moment.localeData().longDateFormat('L')}
+                        value={value}
+                        readOnly={readOnly || readOnlyInput}
+                        onChange={this.handleInputChange}
                     />
-                ) : null}
-            </div>
-        )
+                    <button type="button" className="datepicker-trigger" onClick={this.toggleDatePicker}>
+                        <ClrIcon className="datepicker-trigger-icon" shape="calendar" />
+                    </button>
+                </div>
+            );
+
+            if (!this.state.isOpen) return containerInput;
+
+            return (
+                <SpaceAround
+                    container="span"
+                    calcStyle
+                    immediate
+                    timeout={1000}
+                    item={(status, style) => (
+                        this.state.isOpen ? (
+                            <DatePicker
+                                style={{
+                                    position: 'absolute',
+                                    display: 'inline',
+                                    top: style.top,
+                                    left: 0,
+                                    transitionDuration: '0.2s'
+                                }}
+                                readOnly={readOnly}
+                                onChange={this.handleDatePickerChange}
+                            />
+                        ) : <div />
+                    )}
+                    children={containerInput}
+                />
+            );
+        } else {
+            return (
+                <div className="date-container" style={{ position: 'relative' }}>
+                    <input
+                        type="text"
+                        placeholder={Moment.localeData().longDateFormat('L')}
+                        value={value}
+                        readOnly={readOnly || readOnlyInput}
+                        onChange={this.handleInputChange}
+                    />
+                    <button type="button" className="datepicker-trigger" onClick={this.toggleDatePicker}>
+                        <ClrIcon className="datepicker-trigger-icon" shape="calendar" />
+                    </button>
+                    {this.state.isOpen ? (
+                        <DatePicker
+                            style={{
+                                position: 'absolute',
+                                top: '100%',
+                                left: 0
+                            }}
+                            readOnly={readOnly}
+                            onChange={this.handleDatePickerChange}
+                        />
+                    ) : null}
+                </div>
+            );
+        }
     }
 }

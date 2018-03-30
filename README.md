@@ -16,6 +16,7 @@ React UI framework, based on [VMWare Clarity](https://vmware.github.io/clarity/)
 * Cards
 * Checkboxes
 * Code Highlight
+* DatePicker
 
 * Labels
 * Tooltips

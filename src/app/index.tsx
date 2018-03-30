@@ -158,8 +158,7 @@ class App extends React.Component {
                         <Checkbox inline>A</Checkbox>
                         <Checkbox inline defaultValue="indeterminate">B</Checkbox>
                         <br />
-                        <DatePicker />
-                        <DateInput />
+                        <DateInput spaceAround />
                     </div>
                     <nav className="sidenav" />
                 </div>

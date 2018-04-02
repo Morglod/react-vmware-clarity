@@ -1,10 +1,11 @@
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import * as Moment from 'moment';
 
 // https://github.com/vmware/clarity/tree/master/src/clr-angular/forms/datepicker
 
 import { ClrIcon } from 'icons';
-import { classNames } from 'utils';
+import { classNames, isInTreeDOM } from 'utils';
 import { SpaceAround, SpaceAroundStatus } from 'react-responsive-render';
 
 export type DatePickerProps = {
@@ -37,10 +38,15 @@ export class DatePicker extends React.PureComponent<DatePickerProps, DatePickerS
         locale: 'en'
     }
 
+    static validDate(date: Date) {
+        if (isNaN(date.getTime())) return new Date;
+        return date;
+    }
+
     state: DatePickerState = {
         mode: DatePickerMode.DayPicker,
-        value: Moment(this.props.value !== undefined ? this.props.value : this.props.defaultValue),
-        viewValue: Moment(this.props.value !== undefined ? this.props.value : this.props.defaultValue)
+        value: Moment(this.props.value !== undefined ? DatePicker.validDate(this.props.value) : this.props.defaultValue),
+        viewValue: Moment(this.props.value !== undefined ? DatePicker.validDate(this.props.value) : this.props.defaultValue)
     }
 
     handlePrevMonth = () => {
@@ -69,7 +75,7 @@ export class DatePicker extends React.PureComponent<DatePickerProps, DatePickerS
 
     handleSetInitialMonth = () => {
         this.setState({
-            viewValue: Moment(this.props.value !== undefined ? this.props.value : this.props.defaultValue).startOf('month')
+            viewValue: Moment(this.props.value !== undefined ? DatePicker.validDate(this.props.value) : this.props.defaultValue).startOf('month')
         })
     };
 
@@ -99,7 +105,7 @@ export class DatePicker extends React.PureComponent<DatePickerProps, DatePickerS
 
     handleSetInitialYear = () => {
         this.setState({
-            viewValue: Moment(this.props.value !== undefined ? this.props.value : this.props.defaultValue).startOf('month')
+            viewValue: Moment(this.props.value !== undefined ? DatePicker.validDate(this.props.value) : this.props.defaultValue).startOf('month')
         })
     };
 
@@ -116,7 +122,7 @@ export class DatePicker extends React.PureComponent<DatePickerProps, DatePickerS
 
         if (hidden) return null;
 
-        const pickedMoment = this.props.value !== undefined ? Moment(this.props.value) : this.state.value;
+        const pickedMoment = this.props.value !== undefined ? Moment(DatePicker.validDate(this.props.value)) : this.state.value;
         if (locale) pickedMoment.locale(locale);
 
         const lastDayPrevMonth = Moment(moment).subtract(1, 'months').endOf('month');
@@ -158,7 +164,7 @@ export class DatePicker extends React.PureComponent<DatePickerProps, DatePickerS
             viewDays.push({
                 date: i + 1,
                 monthIndex: firstDayNextMonth.month(),
-                dateJS: firstDayNextMonth.toDate().getTime() + ((i + firstDayNextMonthWeekday + 1) * DAY_MS),
+                dateJS: firstDayNextMonth.toDate().getTime() + (i * DAY_MS),
             });
         }
 
@@ -331,8 +337,24 @@ export class DateInput extends React.PureComponent<DateInputProps> {
         value: DateInput.valueToString(this.props.value !== undefined ? this.props.value : (this.props.defaultValue || new Date)),
     };
 
-    toggleDatePicker = () => {
-        this.setState({ isOpen: !this.state.isOpen });
+    componentWillUnmount() {
+        this.unsubscribeDocumentClick();
+    }
+
+    handleDatePickerButtonClick = (evt: React.MouseEvent<any>) => {
+        evt.preventDefault();
+        this.toggleDatePicker();
+    };
+
+    toggleDatePicker = (newState = !this.state.isOpen) => {
+        this.setState({
+            isOpen: newState
+        }, this.afterToggleDatePicker);
+    };
+
+    afterToggleDatePicker = () => {
+        if (this.state.isOpen) this.subscribeDocumentClick();
+        else this.unsubscribeDocumentClick();
     };
 
     handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -347,10 +369,27 @@ export class DateInput extends React.PureComponent<DateInputProps> {
     };
 
     handleDatePickerChange = (newValue: Date) => {
+        this.toggleDatePicker(false);
         this.setState({
-            value: DateInput.valueToString(newValue, this.props.locale),
-            isOpen: false,
+            value: DateInput.valueToString(newValue, this.props.locale)
         }, this.props.onChange ? (() => this.props.onChange!(newValue)) : undefined);
+    };
+
+    subscribeDocumentClick = () => {
+        window.addEventListener('click', this.handleDocumentClick as any, true);
+    };
+
+    unsubscribeDocumentClick = () => {
+        window.removeEventListener('click', this.handleDocumentClick as any, true);
+    };
+
+    handleDocumentClick = (evt: React.MouseEvent<HTMLElement>) => {
+        console.log('handle');
+        if (!this.state.isOpen) return;
+        const target = evt.target as any as HTMLElement;
+        if (!isInTreeDOM(ReactDOM.findDOMNode(this), target)) {
+            this.toggleDatePicker(false);
+        }
     };
 
     render() {
@@ -370,12 +409,12 @@ export class DateInput extends React.PureComponent<DateInputProps> {
                 <div className="date-container" style={{ position: 'relative' }}>
                     <input
                         type="text"
-                        placeholder={Moment.localeData().longDateFormat('L')}
+                        placeholder={Moment.localeData(locale).longDateFormat('L')}
                         value={value}
                         readOnly={readOnly || readOnlyInput}
                         onChange={this.handleInputChange}
                     />
-                    <button type="button" className="datepicker-trigger" onClick={this.toggleDatePicker}>
+                    <button type="button" className="datepicker-trigger" onClick={this.handleDatePickerButtonClick}>
                         <ClrIcon className="datepicker-trigger-icon" shape="calendar" />
                     </button>
                 </div>
@@ -399,6 +438,7 @@ export class DateInput extends React.PureComponent<DateInputProps> {
                                     left: 0,
                                     transitionDuration: '0.2s'
                                 }}
+                                value={Moment(value, Moment.localeData(locale).longDateFormat('L')).toDate()}
                                 readOnly={readOnly}
                                 onChange={this.handleDatePickerChange}
                             />
@@ -412,12 +452,12 @@ export class DateInput extends React.PureComponent<DateInputProps> {
                 <div className="date-container" style={{ position: 'relative' }}>
                     <input
                         type="text"
-                        placeholder={Moment.localeData().longDateFormat('L')}
+                        placeholder={Moment.localeData(locale).longDateFormat('L')}
                         value={value}
                         readOnly={readOnly || readOnlyInput}
                         onChange={this.handleInputChange}
                     />
-                    <button type="button" className="datepicker-trigger" onClick={this.toggleDatePicker}>
+                    <button type="button" className="datepicker-trigger" onClick={this.handleDatePickerButtonClick}>
                         <ClrIcon className="datepicker-trigger-icon" shape="calendar" />
                     </button>
                     {this.state.isOpen ? (
@@ -427,6 +467,7 @@ export class DateInput extends React.PureComponent<DateInputProps> {
                                 top: '100%',
                                 left: 0
                             }}
+                            value={Moment(value, Moment.localeData(locale).longDateFormat('L')).toDate()}
                             readOnly={readOnly}
                             onChange={this.handleDatePickerChange}
                         />

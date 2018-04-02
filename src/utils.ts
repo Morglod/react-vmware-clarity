@@ -10,3 +10,11 @@ export function unreachableCode(message: string = 'runtime error'): never {
 
 /** if resolve 'cancel', cancels default action */
 export type CancelableHandler = <EventT = React.SyntheticEvent<any>>(evt: EventT) => Promise<'cancel'|void>;
+
+export function isInTreeDOM(rootEl: Node, clicked: Node): boolean {
+    while(clicked !== rootEl && clicked !== document.body && clicked !== null) {
+        clicked = clicked.parentNode!;
+    }
+
+    return clicked === rootEl;
+}

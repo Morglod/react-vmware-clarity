@@ -435,8 +435,7 @@ export class DateInput extends React.PureComponent<DateInputProps> {
                                     position: 'absolute',
                                     display: 'inline',
                                     top: style.top,
-                                    left: 0,
-                                    transitionDuration: '0.2s'
+                                    left: 0
                                 }}
                                 value={Moment(value, Moment.localeData(locale).longDateFormat('L')).toDate()}
                                 readOnly={readOnly}

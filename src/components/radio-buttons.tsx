@@ -1,43 +1,27 @@
 import * as React from 'react';
 import { classNames } from 'utils';
 
-export type ToggleProps = {
+export type RadioProps = {
     id?: string,
     className?: string,
-    value?: boolean,
     name?: string,
-    defaultValue?: boolean,
+    value: string,
+    checked?: boolean,
+    defaultChecked?: boolean,
     disabled?: boolean,
     ariaLabelledby?: string,
     children?: any,
     /** alias for children */
     label?: string,
-    onChange?: (newValue: boolean) => void
+    onChange?: (evt: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export class Toggle extends React.PureComponent<ToggleProps> {
+export class Radio extends React.PureComponent<RadioProps> {
     static defaultProps = {
-        defaultValue: false
+        defaultChecked: false
     };
 
     id = `${Date.now()}_${Math.random().toString().replace('.', 'x')}`;
-
-    state: {
-        value: boolean
-    } = {
-        value: this.props.value !== undefined ? this.props.value : this.props.defaultValue!
-    }
-
-    handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            value: evt.target.checked
-        }, this.afterChange);
-    };
-
-    afterChange = () => {
-        if (this.props.onChange)
-            this.props.onChange(this.state.value);
-    };
 
     render() {
         const {
@@ -50,25 +34,46 @@ export class Toggle extends React.PureComponent<ToggleProps> {
         } = this.props;
 
         const id = this.props.id !== undefined ? this.props.id : this.id;
-        const value = this.props.value !== undefined ? this.props.value : this.state.value;
 
         return (
             <div
                 className={classNames([
-                    'toggle-switch',
+                    'radio',
                     className
                 ])}
             >
                 <input
-                    type="checkbox"
+                    type="radio"
                     id={id}
                     name={name}
-                    checked={value !== false}
-                    onChange={this.handleChange}
+                    checked={this.props.checked}
+                    value={this.props.value}
+                    defaultChecked={this.props.defaultChecked}
+                    onChange={this.props.onChange}
                     disabled={disabled}
                     aria-labelledby={ariaLabelledby}
                 />
                 <label htmlFor={id}> {label} {children}</label>
+            </div>
+        );
+    }
+}
+
+export type RadioGroupProps = {
+    onChange?: (value: string) => void,
+    children?: any,
+}
+
+export class RadioGroup extends React.PureComponent<RadioGroupProps> {
+    handleChange = (evt: React.ChangeEvent<any>) => {
+        if (this.props.onChange)
+            this.props.onChange(evt.target.value);
+    };
+
+    render() {
+        return (
+            <div onChange={this.handleChange}>
+                {this.props.children}
             </div>
         );
     }

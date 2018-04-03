@@ -19,6 +19,7 @@ React UI framework, based on [VMWare Clarity](https://vmware.github.io/clarity/)
 * DatePicker
 
 * DropDown
+* Radio Buttons
 
 * Labels
 * Spinners

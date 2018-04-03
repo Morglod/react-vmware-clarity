@@ -16,6 +16,8 @@ import {
     DropDown,
     Spinner,
     Toggle,
+    Radio,
+    RadioGroup,
 } from 'components';
 
 import { ClrIcon } from 'icons';
@@ -234,6 +236,12 @@ class App extends React.Component {
                         <Toggle defaultValue />
                         <Toggle value disabled />
                         <Toggle disabled />
+                        <br />
+                        <RadioGroup>
+                            <Radio name="radioGroup1" label="Radio option 1" value="option1" />
+                            <Radio name="radioGroup1" label="Radio option 2" value="option2" />
+                        </RadioGroup>
+                        <br />
                     </div>
                     <nav className="sidenav" />
                 </div>

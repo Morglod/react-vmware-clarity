@@ -13,9 +13,15 @@ import {
     Checkbox,
     DatePicker,
     DateInput,
+    DropDown,
 } from 'components';
+import { ClrIcon } from 'icons';
 
 class App extends React.Component {
+    state: any = {
+        dropdownButtonLoading: false
+    };
+
     render() {
         return (
             <div className="main-container">
@@ -160,6 +166,62 @@ class App extends React.Component {
                         <br />
                         <DateInput />
                         <DateInput spaceAround />
+                        <br />
+                        <DropDown
+                            closeOnBackdrop={!this.state.dropdownButtonLoading}
+                            onItemClick={(item, itemPath) => {
+                                console.log('DropDown top onItemClick', { item, itemPath });
+                            }}
+                            button={{
+                                label: 'Dropdown',
+                                className: 'btn-link',
+                            }}
+                            header="Dropdown header"
+                            items={[
+                                { label: 'Action', active: true },
+                                { label: 'Disabled Link', disabled: true },
+                                { divider: true },
+                                { label: 'Lorem.' },
+                                {
+                                    label: 'Loerm ipsum',
+                                    menu: {
+                                        onItemClick: (item, itemPath) => {
+                                            if (itemPath.endsWith('/loadButton')) {
+                                                this.setState({ dropdownButtonLoading: true });
+                                                return new Promise(resolve => {
+                                                    setTimeout(() => {
+                                                        this.setState({ dropdownButtonLoading: false });
+                                                        resolve();
+                                                    }, 2000);
+                                                });
+                                            }
+                                            return;
+                                        },
+                                        items: [
+                                            { label: 'Foo.' },
+                                            {
+                                                label: 'Bar.',
+                                                menu: {
+                                                    items: [
+                                                        {
+                                                            label: !this.state.dropdownButtonLoading ? 'Load something' : undefined,
+                                                            key: 'loadButton',
+                                                            children: this.state.dropdownButtonLoading ? (
+                                                                <span>
+                                                                    <span className="spinner spinner-inline"></span> Loading
+                                                                </span>
+                                                            ) : undefined
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            { label: 'Foo 2.' }
+                                        ]
+                                    }
+                                },
+                                { label: 'Ipsum.' }
+                            ]}
+                        />
                     </div>
                     <nav className="sidenav" />
                 </div>

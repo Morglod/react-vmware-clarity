@@ -16,6 +16,8 @@ export type ButtonType = {
 
 export type ButtonProps = ButtonType & {
     className?: string,
+    /** alias for children */
+    label?: string,
     children?: any,
     disabled?: boolean,
     outline?: boolean,
@@ -40,7 +42,7 @@ function TypeToStr(type: ButtonType) {
 
 export class Button extends React.PureComponent<ButtonProps> {
     render() {
-        const { className, children, disabled, outline, flat, small, block, icon, loading, onClick, title, submit } = this.props;
+        const { className, children, label, disabled, outline, flat, small, block, icon, loading, onClick, title, submit } = this.props;
         const type = TypeToStr(this.props);
 
         const rendered = (
@@ -61,6 +63,7 @@ export class Button extends React.PureComponent<ButtonProps> {
                 {(!loading && icon) && <ClrIcon shape={icon} key="icon" />}
                 {loading && <span className="spinner spinner-inline" />}
                 {(loading || icon) && ' '}
+                {label}
                 {children}
             </button>
         );

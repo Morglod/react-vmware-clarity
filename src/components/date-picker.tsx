@@ -316,11 +316,14 @@ export type DateInputProps = {
     readOnly?: boolean,
     readOnlyInput?: boolean,
     spaceAround?: boolean,
+    isOpen?: boolean,
+    defaultOpen?: boolean
 }
 
 export class DateInput extends React.PureComponent<DateInputProps> {
-    static defaultProps: DatePickerProps = {
+    static defaultProps: DateInputProps = {
         defaultValue: new Date(),
+        spaceAround: true,
         locale: 'en'
     }
 
@@ -333,9 +336,13 @@ export class DateInput extends React.PureComponent<DateInputProps> {
         isOpen: boolean,
         value: string
     } = {
-        isOpen: false,
+        isOpen: this.props.defaultOpen || false,
         value: DateInput.valueToString(this.props.value !== undefined ? this.props.value : (this.props.defaultValue || new Date)),
     };
+
+    get isOpen() {
+        return this.props.isOpen !== undefined ? this.props.isOpen : this.state.isOpen;
+    }
 
     componentWillUnmount() {
         this.unsubscribeDocumentClick();
@@ -353,7 +360,7 @@ export class DateInput extends React.PureComponent<DateInputProps> {
     };
 
     afterToggleDatePicker = () => {
-        if (this.state.isOpen) this.subscribeDocumentClick();
+        if (this.isOpen) this.subscribeDocumentClick();
         else this.unsubscribeDocumentClick();
     };
 
@@ -384,7 +391,6 @@ export class DateInput extends React.PureComponent<DateInputProps> {
     };
 
     handleDocumentClick = (evt: React.MouseEvent<HTMLElement>) => {
-        console.log('handle');
         if (!this.state.isOpen) return;
         const target = evt.target as any as HTMLElement;
         if (!isInTreeDOM(ReactDOM.findDOMNode(this), target)) {
@@ -420,7 +426,7 @@ export class DateInput extends React.PureComponent<DateInputProps> {
                 </div>
             );
 
-            if (!this.state.isOpen) return containerInput;
+            if (!this.isOpen) return containerInput;
 
             return (
                 <SpaceAround
@@ -429,7 +435,7 @@ export class DateInput extends React.PureComponent<DateInputProps> {
                     immediate
                     timeout={1000}
                     item={(status, style) => (
-                        this.state.isOpen ? (
+                        this.isOpen ? (
                             <DatePicker
                                 style={{
                                     position: 'absolute',
@@ -459,7 +465,7 @@ export class DateInput extends React.PureComponent<DateInputProps> {
                     <button type="button" className="datepicker-trigger" onClick={this.handleDatePickerButtonClick}>
                         <ClrIcon className="datepicker-trigger-icon" shape="calendar" />
                     </button>
-                    {this.state.isOpen ? (
+                    {this.isOpen ? (
                         <DatePicker
                             style={{
                                 position: 'absolute',

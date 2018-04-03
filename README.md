@@ -18,8 +18,14 @@ React UI framework, based on [VMWare Clarity](https://vmware.github.io/clarity/)
 * Code Highlight
 * DatePicker
 
+* DropDown
+
 * Labels
 * Tooltips
+
+## Feature
+
+* DropDown with async event propagation
 
 ## TODO
 

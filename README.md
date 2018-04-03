@@ -25,7 +25,7 @@ React UI framework, based on [VMWare Clarity](https://vmware.github.io/clarity/)
 
 ## Feature
 
-* DropDown with async event propagation
+* DropDown with async event propagation [[video](https://youtu.be/Q23Z5e8ZZD8)]
 
 ## TODO
 

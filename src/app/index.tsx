@@ -15,6 +15,7 @@ import {
     DateInput,
     DropDown,
     Spinner,
+    Toggle,
 } from 'components';
 
 import { ClrIcon } from 'icons';
@@ -224,6 +225,15 @@ class App extends React.Component {
                         />
                         <br />
                         <Spinner inline label="Loading..." />
+                        <br />
+                        <Toggle label="Toggles turn on and off" />
+                        <Toggle label="Toggle on and disabled" value disabled />
+                        <Toggle label="Toggle off and disabled" disabled />
+                        <br />
+                        <Toggle />
+                        <Toggle defaultValue />
+                        <Toggle value disabled />
+                        <Toggle disabled />
                     </div>
                     <nav className="sidenav" />
                 </div>

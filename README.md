@@ -22,6 +22,7 @@ React UI framework, based on [VMWare Clarity](https://vmware.github.io/clarity/)
 
 * Labels
 * Spinners
+* Toggle Switches
 * Tooltips
 
 ## Feature

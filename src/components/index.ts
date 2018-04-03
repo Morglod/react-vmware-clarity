@@ -9,3 +9,4 @@ export * from './checkboxes';
 export * from './date-picker';
 export * from './dropdowns';
 export * from './spinners';
+export * from './toggle-switches';

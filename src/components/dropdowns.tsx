@@ -52,13 +52,15 @@ export type DropDownMenuProps = {
     closeOnItemClick?: boolean,
     closeOnBackdrop?: boolean
     hidden?: boolean,
+    _level?: number
 }
 
 export class DropDownMenu extends React.PureComponent<DropDownMenuProps> {
     static defaultProps = {
         closeOnItemClick: true,
         closeOnBackdrop: true,
-        itemsPath: ''
+        itemsPath: '',
+        _level: 0
     }
 
     render(): any {
@@ -71,6 +73,7 @@ export class DropDownMenu extends React.PureComponent<DropDownMenuProps> {
             itemsPath,
             closeOnBackdrop,
             hidden,
+            _level,
         } = this.props;
 
         return (
@@ -114,10 +117,11 @@ export class DropDownMenu extends React.PureComponent<DropDownMenuProps> {
                                     isOpen={item.menuOpen}
                                     defaultOpen={item.defaultMenuOpen}
                                     closeOnBackdrop={closeOnBackdrop}
+                                    _level={_level! + 1}
                                     {...item.menu}
                                     itemsPath={itemPath}
                                     className={classNames([
-                                        'right-bottom',
+                                        _level! % 2 === 0 ? 'right-bottom' : 'left-top',
                                         item.menu.className
                                     ])}
                                     dropdownItem={renderedItem}
@@ -167,7 +171,8 @@ export class DropDown extends React.PureComponent<DropDownProps> {
     static defaultProps = {
         closeOnItemClick: true,
         closeOnBackdrop: true,
-        itemsPath: ''
+        itemsPath: '',
+        _level: 0
     };
     
     static STOP_PROPOGATION = STOP_PROPAGATION;
@@ -247,6 +252,7 @@ export class DropDown extends React.PureComponent<DropDownProps> {
             closeOnItemClick,
             closeOnBackdrop,
             hidden,
+            _level,
         } = this.props;
 
         const isOpen = this.props.isOpen !== undefined ? this.props.isOpen : this.state.isOpen;
@@ -286,6 +292,7 @@ export class DropDown extends React.PureComponent<DropDownProps> {
                     itemsPath={itemsPath}
                     closeOnItemClick={closeOnItemClick}
                     closeOnBackdrop={closeOnBackdrop}
+                    _level={_level!}
                 />}
                 {children}
             </div>

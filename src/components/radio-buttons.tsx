@@ -39,6 +39,7 @@ export class Radio extends React.PureComponent<RadioProps> {
             <div
                 className={classNames([
                     'radio',
+                    disabled && 'disabled',
                     className
                 ])}
             >

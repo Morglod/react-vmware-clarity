@@ -240,6 +240,7 @@ class App extends React.Component {
                         <RadioGroup>
                             <Radio name="radioGroup1" label="Radio option 1" value="option1" />
                             <Radio name="radioGroup1" label="Radio option 2" value="option2" />
+                            <Radio name="radioGroup1" label="Radio option 3 (disabled)" disabled value="option3" />
                         </RadioGroup>
                         <br />
                     </div>

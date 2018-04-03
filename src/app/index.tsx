@@ -18,6 +18,7 @@ import {
     Toggle,
     Radio,
     RadioGroup,
+    Select,
 } from 'components';
 
 import { ClrIcon } from 'icons';
@@ -243,6 +244,20 @@ class App extends React.Component {
                             <Radio name="radioGroup1" label="Radio option 3 (disabled)" disabled value="option3" />
                         </RadioGroup>
                         <br />
+                        <Select
+                            onChange={values => console.log(values)}
+                            options={[
+                                'a', 'b', 'c', 'd'
+                            ]}
+                        />
+                        <br />
+                        <Select
+                            onChange={values => console.log(values)}
+                            multiple
+                            options={[
+                                'a', 'b', 'c', 'd'
+                            ]}
+                        />
                     </div>
                     <nav className="sidenav" />
                 </div>

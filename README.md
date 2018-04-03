@@ -20,6 +20,7 @@ React UI framework, based on [VMWare Clarity](https://vmware.github.io/clarity/)
 
 * DropDown
 * Radio Buttons
+* Select Boxes
 
 * Labels
 * Spinners

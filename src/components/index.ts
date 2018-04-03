@@ -11,3 +11,4 @@ export * from './dropdowns';
 export * from './spinners';
 export * from './toggle-switches';
 export * from './radio-buttons';
+export * from './select-boxes';

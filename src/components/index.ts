@@ -8,3 +8,4 @@ export * from './code';
 export * from './checkboxes';
 export * from './date-picker';
 export * from './dropdowns';
+export * from './spinners';

@@ -14,7 +14,9 @@ import {
     DatePicker,
     DateInput,
     DropDown,
+    Spinner,
 } from 'components';
+
 import { ClrIcon } from 'icons';
 
 class App extends React.Component {
@@ -207,9 +209,7 @@ class App extends React.Component {
                                                             label: !this.state.dropdownButtonLoading ? 'Load something' : undefined,
                                                             key: 'loadButton',
                                                             children: this.state.dropdownButtonLoading ? (
-                                                                <span>
-                                                                    <span className="spinner spinner-inline"></span> Loading
-                                                                </span>
+                                                                <Spinner inline label="Loading..." />
                                                             ) : undefined
                                                         }
                                                     ]
@@ -222,6 +222,8 @@ class App extends React.Component {
                                 { label: 'Ipsum.' }
                             ]}
                         />
+                        <br />
+                        <Spinner inline label="Loading..." />
                     </div>
                     <nav className="sidenav" />
                 </div>

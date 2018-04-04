@@ -13,3 +13,4 @@ export * from './toggle-switches';
 export * from './radio-buttons';
 export * from './select-boxes';
 export * from './tables';
+export * from './input-fields';

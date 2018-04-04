@@ -6,17 +6,23 @@ export type TooltipProps = {
     children?: any,
     content: any,
     size?: 'xs'|'sm'|'md'|'lg',
-    position?: 'top-right'|'top-left'|'bottom-right'|'bottom-left'|'right'|'left'
+    position?: 'top-right'|'top-left'|'bottom-right'|'bottom-left'|'right'|'left',
+    container?: any,
+    containerProps?: any,
 }
 
 export class Tooltip extends React.PureComponent<TooltipProps> {
+    static defaultProps = {
+        container: 'span',
+    }
+
     render() {
-        const { className, children, position, size, content } = this.props;
+        const { container: Container, containerProps, className, children, position, size, content } = this.props;
 
         if (!children) return null;
 
         return (
-            <span
+            <Container
                 className={classNames([
                     className,
                     'tooltip',
@@ -25,10 +31,11 @@ export class Tooltip extends React.PureComponent<TooltipProps> {
                 ])}
                 role="tooltip"
                 aria-haspopup="true"
+                {...containerProps}
             >
                 {children}
                 <span className="tooltip-content" children={content} />
-            </span>
+            </Container>
         );
     }
 }

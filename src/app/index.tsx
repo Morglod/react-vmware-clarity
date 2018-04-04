@@ -21,6 +21,7 @@ import {
     Select,
     Table,
     InputField,
+    Modal,
 } from 'components';
 
 import { ClrIcon } from 'icons';
@@ -29,6 +30,8 @@ class App extends React.Component {
     state: any = {
         dropdownButtonLoading: false
     };
+
+    $modal!: Modal;
 
     render() {
         return (
@@ -299,14 +302,58 @@ class App extends React.Component {
                             </tbody>
                         </Table>
                         <br />
-                        <InputField
-                            label="Memory space"
-                            pattern={/[0-9]{1,}/}
-                            required
-                            tooltip={{
-                                content: 'Allocate memory space',
-                            }}
-                        />
+                        <form>
+                            <InputField
+                                label="Memory space"
+                                pattern={/[0-9]{1,}/}
+                                required
+                                tooltip={{
+                                    content: 'Allocate memory space',
+                                }}
+                                title="Megabytes"
+                            />
+                        </form>
+                        <Modal
+                            ref={r => this.$modal = r!}
+                            title="Add datastore to host"
+                            closable
+                            footer={modal => (
+                                <>
+                                    <Button
+                                        outline
+                                        onClick={() => modal.close()}
+                                        label="Cancel"
+                                    />
+                                    <Button
+                                        primary
+                                        onClick={() => modal.close()}
+                                        label="Add"
+                                    />
+                                </>
+                            )}
+                        >
+                            <p>
+                                Select a host where you want your datastore to be added.
+                            </p>
+                            <form>
+                                <section className="form-block">
+                                    <Select
+                                        label="Host"
+                                        container="div"
+                                        containerProps={{
+                                            className: "form-group"
+                                        }}
+                                        options={[
+                                            '10.11.12.13',
+                                            '14.15.16.17',
+                                            '18.19.20.21',
+                                            '22.23.24.25'
+                                        ]}
+                                    />
+                                </section>
+                            </form>
+                        </Modal>
+                        <Button label="Open modal" onClick={() => this.$modal.open()} />
                     </div>
                     <nav className="sidenav" />
                 </div>

@@ -14,3 +14,4 @@ export * from './radio-buttons';
 export * from './select-boxes';
 export * from './tables';
 export * from './input-fields';
+export * from './modals';

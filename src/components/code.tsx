@@ -52,6 +52,10 @@ export class Code extends React.PureComponent<CodeProps> {
 
     highlight = () => {
         const el = ReactDOM.findDOMNode(this.$code);
+        if (!el || typeof el === 'string') {
+            console.warn('wrong element type');
+            return;
+        }
         Prism.highlightElement(el);
     }
 

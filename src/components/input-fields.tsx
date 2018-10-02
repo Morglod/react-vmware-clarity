@@ -68,7 +68,7 @@ export class InputField extends React.PureComponent<InputFieldProps> {
             options,
             autoComplete,
             title,
-            ...otherInputProps,
+            ...otherInputProps
         } = this.props;
 
         const id = this.props.id !== undefined ? this.props.id : this.id;

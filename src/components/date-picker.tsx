@@ -393,7 +393,12 @@ export class DateInput extends React.PureComponent<DateInputProps> {
     handleDocumentClick = (evt: React.MouseEvent<HTMLElement>) => {
         if (!this.state.isOpen) return;
         const target = evt.target as any as HTMLElement;
-        if (!isInTreeDOM(ReactDOM.findDOMNode(this), target)) {
+        const el = ReactDOM.findDOMNode(this);
+        if (!el || typeof el === 'string') {
+            console.warn('wrong element type');
+            return;
+        }
+        if (!isInTreeDOM(el, target)) {
             this.toggleDatePicker(false);
         }
     };
